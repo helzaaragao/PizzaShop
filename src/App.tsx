@@ -11,6 +11,8 @@ export function App() {
       <Helmet titleTemplate="%s | pizza.shop"></Helmet>
          <RouterProvider router={router}/>
     </HelmetProvider>
+
+    // quando quer fazer forms e validar = hook-form e zod
   
   )
 }

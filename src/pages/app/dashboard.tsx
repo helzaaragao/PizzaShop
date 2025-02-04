@@ -2,9 +2,9 @@ import { Helmet } from "react-helmet-async";
 
 export function DashBoard(){
     return <>
-    <Helmet title="Dashboard">
+    <Helmet title="Dashboard"></Helmet>
     <h1>DashBoard</h1>
-    </Helmet>
+    
    
     </>
 }
