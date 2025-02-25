@@ -8,6 +8,6 @@ export interface RegisterRestaurantBody {
 }
 
 export async function registerRestaurant({ restaurantName,managerName, email, phone}: RegisterRestaurantBody){
-    await api.post('/authenticate', {restaurantName,managerName, email, phone})
+    await api.post('/restaurants', {restaurantName,managerName, email, phone})
 }
 

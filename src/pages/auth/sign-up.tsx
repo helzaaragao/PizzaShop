@@ -33,7 +33,8 @@ export function SignUp(){
     async function handleSignUp(data: SignUpForm){
 
         try{ 
-            await registerRestaurantFn({restaurantName: data.restaurantName,
+            await registerRestaurantFn({
+                restaurantName: data.restaurantName,
                 managerName: data.managerName, 
                 email: data.email,
                 phone: data.phone,
@@ -41,7 +42,7 @@ export function SignUp(){
             toast.success('Restaurante cadastrado com sucesso!', {
             action: { 
                 label: 'Login', 
-                onClick: () => navigate(`/sign-in?email=${data.email}`)
+                onClick: () => navigate(`/sign-in?email=${data.email}`),
             },
        });
         } catch { 

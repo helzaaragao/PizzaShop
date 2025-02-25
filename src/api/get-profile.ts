@@ -14,4 +14,4 @@ export async function getProfile(){
     return response.data
 }
 
-// aula 3 | 03:15 - resolver bug do servidor
+// aula 3 | 03:15 
