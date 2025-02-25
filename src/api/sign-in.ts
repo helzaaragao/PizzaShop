@@ -8,4 +8,3 @@ export async function signIn({email}: SignInBody){
     await api.post('/authenticate', {email})
 }
 
-// 02:58 aula 2 | 3
