@@ -1,35 +1,80 @@
-import { getManagedRestaurant } from "@/api/get-managed-restaurant";
+import { getManagedRestaurant, GetManagedRestaurantResponse } from "@/api/get-managed-restaurant";
 import { Button } from "./ui/button";
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog";
+import { DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import {zodResolver} from '@hookform/resolvers/zod'
 import { useForm } from "react-hook-form";
+import { updateProfile } from "@/api/update-profile";
+import { toast } from "sonner";
 
 const storeProfileSchema = z.object({
     name: z.string().min(1), 
-    description: z.string(),
+    description: z.string().nullable(),
 })
+
+// aula 4 | 12:28
 
 type StoreProfileSchema = z.infer<typeof storeProfileSchema>
 
 export function StoreProfileDialog(){
+    const queryClient = useQueryClient()
 
     const {data: managedRestaurant} = useQuery({
         queryKey: ['managed-restaurant'], 
         queryFn: getManagedRestaurant,
+        staleTime: Infinity, 
     })
 
-    const {register, handleSubmit} = useForm<StoreProfileSchema>({
+    const {register, handleSubmit, formState: {isSubmitting}} = useForm<StoreProfileSchema>({
         resolver: zodResolver(storeProfileSchema),
         values:{
             name: managedRestaurant?.name ?? '',
             description: managedRestaurant?.description ?? '',
         }
     })
+
+    function updateManagedRestaurantCatche({name, description}: StoreProfileSchema){
+        const catched = queryClient.getQueryData<GetManagedRestaurantResponse>(['managed-restaurant'])
+        if(catched){
+            queryClient.setQueryData<GetManagedRestaurantResponse>(['managed-restaurant'], {
+                ...catched, 
+                name, 
+                description, 
+            })
+        }
+        return {catched}
+    }
+
+    const {mutateAsync: updateProfileFn} = useMutation({
+        mutationFn: updateProfile, 
+        onMutate( {name, description}){
+           const {catched} =  updateManagedRestaurantCatche({name, description})
+           return {previousProfile: catched}
+           
+        }, 
+        onError(_, __, context){
+            if(context?.previousProfile){
+                updateManagedRestaurantCatche(context.previousProfile)
+            }
+        }
+    })
+
+    async function handleUpdateProfile(data: StoreProfileSchema){
+        try{
+            await updateProfileFn({
+                name: data.name, 
+                description: data.description,
+            })
+
+            toast.success('Perfil atualizado com sucesso! ')
+        } catch{
+            toast.error('Falha ao atualizar o perfil, tente novamente!')
+        }
+    }
 
     
     return( 
@@ -41,7 +86,7 @@ export function StoreProfileDialog(){
                 Atualize as informações do seu estabelecimento visíveis ao seu cliente
             </DialogDescription>
         </DialogHeader>
-        <form>
+        <form onSubmit={handleSubmit(handleUpdateProfile)}>
             <div className="space-y-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
                     <Label className="text-right" htmlFor="name">Nome</Label>
@@ -53,8 +98,11 @@ export function StoreProfileDialog(){
                 </div>
             </div>
             <DialogFooter>
+                <DialogClose asChild>
                 <Button variant="ghost" type="button">Cancelar</Button>
-                <Button variant="sucess" type="submit">Salvar</Button>
+                </DialogClose>
+               
+                <Button variant="sucess" type="submit" disabled={isSubmitting}>Salvar</Button>
             </DialogFooter>
         </form>
        
