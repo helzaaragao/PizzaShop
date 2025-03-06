@@ -9,9 +9,10 @@ import { Dialog } from "@radix-ui/react-dialog";
 import { DialogTrigger } from "./ui/dialog";
 import { StoreProfileDialog } from "./store-profile-dialog";
 import { signOut } from "@/api/sign-out";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export function AccountMenu(){  
+    const navigate = useNavigate()
     const {data: profile, isLoading: isLoadingProfile} = useQuery({
         queryKey: ['profile'], 
         queryFn: getProfile,
@@ -27,9 +28,10 @@ export function AccountMenu(){
     const {mutateAsync: signOutFn, isPending: isSigningOut} = useMutation({
         mutationFn: signOut, 
         onSuccess: () => {
-            Navigate('/sign-in', {replace: true})
+            navigate('/sign-in', {replace: true})
         }
     })
+
     return(
         <Dialog>
         <DropdownMenu>
