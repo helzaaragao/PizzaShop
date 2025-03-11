@@ -21,7 +21,8 @@ export function Pagination({pageIndex, perPage, totalCount, onPageChange}: Pagin
                     Página {pageIndex + 1} de {pages}
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button onClick={() => onPageChange(0)}
+                    <Button 
+                        onClick={() => onPageChange(0)}
                     variant="outline" className="h-8 w-8 p-8"
                     disabled={pageIndex === 0}
                     >
@@ -29,11 +30,13 @@ export function Pagination({pageIndex, perPage, totalCount, onPageChange}: Pagin
                         <span className="sr-only">Primeira página</span>
                     </Button>
                     <Button onClick={() => onPageChange(pageIndex - 1)}
+                      disabled={pageIndex === 0}
                     variant="outline" className="h-8 w-8 p-8">
                         <ChevronsLeft className="h-4 w-4"></ChevronsLeft>
                         <span className="sr-only">Página anterior</span>
                     </Button>
                     <Button onClick={() => onPageChange(pageIndex + 1)} 
+                     disabled={pages <= pageIndex + 1}
                     variant="outline" className="h-8 w-8 p-8">
                         <ChevronsRight className="h-4 w-4"></ChevronsRight>
                         <span className="sr-only">Próxima página</span>
