@@ -1,7 +1,11 @@
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-export function OrderDetails(){
+export interface OrderDetailsProps {
+   orderId: string
+}
+
+export function OrderDetails({orderId}: OrderDetailsProps){
     return(
         <DialogContent>
             <DialogHeader>

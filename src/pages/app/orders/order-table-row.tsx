@@ -29,7 +29,7 @@ export function OrderTableRow({order}: OrderTableRowProps) {
                             <span className="sr-only">Detalhes do pedido</span>
                             </Button>
                     </DialogTrigger>
-                     <OrderDetails></OrderDetails>
+                     <OrderDetails orderId={order.orderId}></OrderDetails>
                 </Dialog>
                                 </TableCell>
                                 <TableCell className="font-mono text-xs font-medium">
