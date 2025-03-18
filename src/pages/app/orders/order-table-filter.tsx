@@ -40,13 +40,13 @@ export function OrderTableFilters(){
             }
 
             if(customerName){
-                state.set('orderId', customerName)
+                state.set('customerName', customerName)
             } else{
                 state.delete('customerName')
             }
 
             if(status){
-                state.set('orderId', status)
+                state.set('status', status)
             } else{
                 state.delete('status')
             }
@@ -54,24 +54,24 @@ export function OrderTableFilters(){
             state.set('page', '1')
             return state
         })
+    }
+
+    function handleClearFilters(){
+        setSearchParams((state) => {
+            state.delete('orderId' )
+             state.delete('customerName')
+             state.delete('status')
+             state.set('page', '1')
+
+             return state
+          
+        })
 
         reset({
             orderId:'', 
             customerName: '', 
             status: 'all', 
 
-        })
-    }
-
-    function handleClearFilters(){
-        setSearchParams((state) => {
-            state.delete('orderId' )
-             state.delete('costumerName')
-             state.delete('status')
-             state.set('page', '1')
-
-             return state
-          
         })
     }
 
