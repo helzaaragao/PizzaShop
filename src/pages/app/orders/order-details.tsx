@@ -32,7 +32,7 @@ export function OrderDetails({orderId, open}: OrderDetailsProps){
                             <TableCell className="text-muted-foreground">Status</TableCell>
                             <TableCell className="flex justify-end">
                                     <OrderStatus status={order.status}></OrderStatus>
-                                </TableCell>
+                            </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="text-muted-foreground">Cliente</TableCell>

@@ -8,6 +8,9 @@ import { OrderStatus } from "@/components/order-status";
 import {formatDistanceToNow} from 'date-fns'
 import {ptBR} from 'date-fns/locale'
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { cancelOrder } from "@/api/cancel-order";
+import { GetOrdersResponse } from "@/api/get-orders";
 
 export interface OrderTableRowProps{
     order: {
@@ -21,6 +24,34 @@ export interface OrderTableRowProps{
 
 export function OrderTableRow({order}: OrderTableRowProps) {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false)
+    const queryClient = useQueryClient()
+
+    const {mutateAsync: cancelOrderFn} = useMutation({
+    mutationFn: cancelOrder,
+    async onSuccess(_, {orderId}){
+        const ordersListCache = queryClient.getQueriesData<GetOrdersResponse>({
+            queryKey: ['orders'],
+        })
+    // Percorrendo todas as listas de pedidos que eu tenho no cache e quando ele encontrar um pedido com o mesmo id do pedido cancelado, ele mudará o estado para cancelado
+        ordersListCache.forEach(([cacheKey, cacheData]) => {
+            if(!cacheData){
+                return
+            }
+            queryClient.setQueryData<GetOrdersResponse>(cacheKey, {
+                ...cacheData,
+                orders: cacheData.orders.map(order => {
+                    if (order.orderId === orderId){
+                        return {...order, status: 'canceled'}
+                    }
+                    return order
+                })
+            })
+        })
+    },
+})
+
+// 13:06 - 8 aula
+
     return(
         <TableRow>
             <TableCell>
@@ -62,7 +93,10 @@ export function OrderTableRow({order}: OrderTableRowProps) {
                                         </Button>
                                 </TableCell>
                                 <TableCell>
-                                    <Button disabled={!['pending', 'processing'].includes(order.status)} variant="ghost" size="xs">
+                                    <Button disabled={!['pending', 'processing'].includes(order.status)} 
+                                    onClick={() => cancelOrderFn({orderId: order.orderId})}
+                                    variant="ghost" 
+                                    size="xs">
                                         <X className="mr-2 h-3 w-3"></X>
                                         Cancelar
                                     </Button>

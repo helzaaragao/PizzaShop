@@ -13,5 +13,3 @@ export async function getProfile(){
     const response = await api.get<GetProfileResponse>('/me')
     return response.data
 }
-
-// aula 3 | 03:15 
