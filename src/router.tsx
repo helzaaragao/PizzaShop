@@ -7,12 +7,14 @@ import { DashBoard } from './pages/app/dashboard/dashboard'
 import { Orders } from './pages/app/orders/orders'
 import { SignIn } from './pages/auth/sign-in'
 import { SignUp } from './pages/auth/sign-up'
+import { Error } from './pages/error'
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <AppLayout></AppLayout>,
-    errorElement: <NotFound></NotFound>,
+    // erros gerais
+    errorElement: <Error></Error>,
     children: [
       { path: '/', element: <DashBoard></DashBoard> },
       { path: '/orders', element: <Orders></Orders> },
@@ -25,5 +27,10 @@ export const router = createBrowserRouter([
       { path: '/sign-in', element: <SignIn></SignIn> },
       { path: '/sign-up', element: <SignUp></SignUp> },
     ],
+  },
+  {
+    // Se o usuário entrar em qualquer endereço que não dê match com os de cima, vai aparecer a página 404
+    path: '*',
+    element: <NotFound></NotFound>,
   },
 ])
